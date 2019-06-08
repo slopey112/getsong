@@ -1,0 +1,52 @@
+#!/bin/bash
+
+output="/run/media/howardp/1379D4F97D013E5D/Documents/Music/"
+
+while getopts ":g:a:o:" opt; do
+    case ${opt} in
+        g)
+            genre=${OPTARG}
+            ;;
+        o)
+            output=${OPTARG}
+            ;;
+    esac
+done
+shift $(($OPTIND -1))
+
+title=$1
+artist=$2
+album=$3
+
+if [ "$1" == "" -o "$2" == "" -o "$3" == "" ]; then
+    echo 'Usage:'
+    echo '    getsong [OPTIONS] title artist album'
+    exit 1
+fi
+
+# Download Song
+mkdir /tmp/getsong_asset
+youtube-dl -q -o "/tmp/getsong_asset/$title.%(ext)s" --extract-audio --audio-format mp3 "ytsearch1:$artist $title audio"
+
+# Label Song
+genre_label=$([ "$genre" == "" ] && echo || echo "-g \"$genre\"")
+eval "id3v2 $genre_label -A \"$album\" -a \"$artist\" /tmp/getsong_asset/\"$title.mp3\""
+
+# Add Cover Art
+cover_hash=$(echo -n $album | md5sum)
+cover_hash=${cover_hash%  -}
+art_downloaded_flag=false
+for cover_art in ~/.getsong/coverart/*; do
+    if [ "$cover_hash" == "$cover_art" ]; then
+        art_downloaded_flag=true
+    fi
+done
+if [ "$art_downloaded_flag" = false ]; then
+    cover_art_link=$(eval "python3 CoverArt.py \"$artist\" \"$album\"")
+    wget -q -O "$HOME/.getsong/cover-art/$cover_hash.jpg" "$cover_art_link"
+    eyeD3 -l error --add-image="$HOME/.getsong/cover-art/$cover_hash.jpg:FRONT_COVER" "/tmp/getsong_asset/$title.mp3"
+fi
+
+# Cleanup
+mv /tmp/getsong_asset/"$title.mp3" "$output"
+rmdir /tmp/getsong_asset

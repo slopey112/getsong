@@ -1,6 +1,6 @@
 #!/bin/bash
 
-output="/run/media/howardp/1379D4F97D013E5D/Documents/Music/"
+output=$(cat "$HOME/.getsong/conf/default_output_path")
 
 while getopts ":g:a:o:" opt; do
     case ${opt} in

@@ -6,6 +6,10 @@ First, clone this repo from github.
 ```
 $ git clone https://github.com/slopey112/getsong.git
 ```
+You may also need to download a few dependencies, listed below:
+```
+eyed3, youtube-dl, id3v2
+```
 Next, navigate to the downloaded directory and execute the setup wizard.
 ```
 $ chmod +x setup.sh

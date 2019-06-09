@@ -26,10 +26,12 @@ fi
 
 # Download Song
 mkdir /tmp/getsong_asset
+echo 'Downloading song...'
 youtube-dl -q -o "/tmp/getsong_asset/$title.%(ext)s" --extract-audio --audio-format mp3 "ytsearch1:$artist $title audio"
 
 # Label Song
 genre_label=$([ "$genre" == "" ] && echo || echo "-g \"$genre\"")
+echo 'Labelling song...'
 eval "id3v2 $genre_label -A \"$album\" -a \"$artist\" /tmp/getsong_asset/\"$title.mp3\""
 
 # Add Cover Art
@@ -42,11 +44,16 @@ for cover_art in ~/.getsong/coverart/*; do
     fi
 done
 if [ "$art_downloaded_flag" = false ]; then
+    echo 'Pulling cover art...'
     cover_art_link=$(eval "python3 $HOME/.getsong/scripts/CoverArt.py \"$artist\" \"$album\"")
+    echo 'Downloading cover art...'
     wget -q -O "$HOME/.getsong/cover-art/$cover_hash.jpg" "$cover_art_link"
+    echo 'Burning cover art...'
     eyeD3 --add-image="$HOME/.getsong/cover-art/$cover_hash.jpg:FRONT_COVER" "/tmp/getsong_asset/$title.mp3" > /dev/null
 fi
 
 # Cleanup
+echo 'Cleaning up...'
 mv /tmp/getsong_asset/"$title.mp3" "$output"
 rmdir /tmp/getsong_asset
+echo 'Done.'

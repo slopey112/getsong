@@ -42,7 +42,7 @@ for cover_art in ~/.getsong/coverart/*; do
     fi
 done
 if [ "$art_downloaded_flag" = false ]; then
-    cover_art_link=$(eval "python3 CoverArt.py \"$artist\" \"$album\"")
+    cover_art_link=$(eval "python3 $HOME/.getsong/scripts/CoverArt.py \"$artist\" \"$album\"")
     wget -q -O "$HOME/.getsong/cover-art/$cover_hash.jpg" "$cover_art_link"
     eyeD3 -l error --add-image="$HOME/.getsong/cover-art/$cover_hash.jpg:FRONT_COVER" "/tmp/getsong_asset/$title.mp3"
 fi

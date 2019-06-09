@@ -8,7 +8,7 @@ $ git clone https://github.com/slopey112/getsong.git
 ```
 You may also need to download a few dependencies, listed below:
 ```
-eyed3, youtube-dl, id3v2
+eyed3, youtube-dl, id3v2, wget, md5sum
 ```
 Next, navigate to the downloaded directory and execute the setup wizard.
 ```
